@@ -86,3 +86,18 @@ for (const theme of ['light', 'dark'] as const) {
     });
   }
 }
+
+test('no console errors or hydration warnings on any page', async ({ page }) => {
+  const problems: string[] = [];
+  page.on('console', (m) => {
+    if (m.type() === 'error' || m.type() === 'warning') problems.push(`${m.type()}: ${m.text()}`);
+  });
+  page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`));
+  for (const path of ['/?level=raid60&n=12&size=8TB&g=2', '/raid/raid-5', '/compare', '/raid']) {
+    await page.goto(path);
+    await page.waitForLoadState('networkidle');
+    await page.mouse.wheel(0, 2000);
+    await page.waitForTimeout(300);
+  }
+  expect(problems).toEqual([]);
+});

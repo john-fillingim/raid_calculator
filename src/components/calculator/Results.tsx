@@ -136,7 +136,9 @@ function Stat({ label, tip, children }: { label: string; tip: string; children: 
 }
 
 function Sub({ children }: { children: React.ReactNode }) {
-  return <span className="num mt-0.5 truncate text-xs font-normal text-text-3">{children}</span>;
+  return (
+    <span className="tabular mt-0.5 truncate text-xs font-normal text-text-3">{children}</span>
+  );
 }
 
 /** One bar split into usable / parity-or-mirror / spare. Exact values on hover and in the legend. */
@@ -410,7 +412,7 @@ export function PerformanceCard({ result }: { result: RaidResult }) {
       </h2>
       {result.valid ? (
         <>
-          <dl className="mt-4 grid grid-cols-3 gap-4">
+          <dl className="mt-4 grid grid-cols-3 gap-x-4 gap-y-2">
             <PerfStat label="Random read" tip={GLOSSARY.readMultiplier} value={p.readMultiplier} />
             <PerfStat
               label="Random write"

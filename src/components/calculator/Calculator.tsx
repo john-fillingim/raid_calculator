@@ -200,19 +200,15 @@ export default function Calculator({
             <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
               <div className="min-w-0 xl:pt-1">
                 <UsableCapacity result={result} units={units} />
-              </div>
-              <div className="flex shrink-0 items-center gap-2 xl:order-last xl:hidden">
-                <UnitsAndShare
-                  units={units}
-                  onUnits={onUnits}
-                  onCopy={onCopy}
-                  copied={copied}
-                  embedded={embedded}
-                  query={query}
-                />
+                {result.valid && (
+                  <div className="mt-5 space-y-3 xl:max-w-md">
+                    <FaultToleranceNote result={result} />
+                    <Tips result={result} onApply={apply} />
+                  </div>
+                )}
               </div>
               <div className="w-full xl:max-w-[440px]">
-                <div className="mb-3 hidden justify-end gap-2 xl:flex">
+                <div className="mb-3 flex flex-wrap gap-2 xl:justify-end">
                   <UnitsAndShare
                     units={units}
                     onUnits={onUnits}
@@ -228,16 +224,10 @@ export default function Calculator({
             <div className="mt-6">
               <CapacityBar result={result} units={units} />
             </div>
-            {result.valid && (
-              <div className="mt-5 space-y-3">
-                <FaultToleranceNote result={result} />
-                <Tips result={result} onApply={apply} />
-              </div>
-            )}
           </Card>
 
           <Card className="p-5 sm:p-6" aria-labelledby={embedded ? undefined : 'diagram-title'}>
-            <div className="mb-4 flex items-baseline justify-between gap-3">
+            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
               <h2
                 id={embedded ? undefined : 'diagram-title'}
                 className="text-sm font-semibold text-text"

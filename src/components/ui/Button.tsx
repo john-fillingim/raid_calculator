@@ -18,7 +18,7 @@ export function Button({ variant = 'secondary', size = 'md', className = '', ...
       {...rest}
       className={[
         'inline-flex items-center justify-center gap-1.5 rounded-md font-medium whitespace-nowrap transition-colors duration-150 disabled:opacity-50',
-        size === 'sm' ? 'min-h-9 px-3 text-[13px]' : 'min-h-11 px-4 text-sm',
+        size === 'sm' ? 'min-h-11 px-3 text-[13px] sm:min-h-9' : 'min-h-11 px-4 text-sm',
         VARIANTS[variant],
         className,
       ].join(' ')}

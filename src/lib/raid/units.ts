@@ -119,8 +119,8 @@ export function parseDriveSize(input: string): number | null {
 /** Probability as a percentage that never rounds to a misleading 0% or 100%. */
 export function formatProbability(p: number): string {
   if (!(p > 0)) return '0%';
-  if (p >= 1) return '100%';
   if (p < 0.001) return '<0.1%';
+  // Never print 100%: the estimate is a model, and float rounding reaches 1 for huge reads.
   if (p > 0.999) return '>99.9%';
   return formatPercent(p, 1);
 }

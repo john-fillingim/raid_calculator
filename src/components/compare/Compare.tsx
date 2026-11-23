@@ -269,7 +269,7 @@ export default function Compare() {
                     aria-disabled={disabled || undefined}
                     onClick={() => !disabled && toggle(level)}
                     className={[
-                      'min-h-9 rounded-md border px-3 text-[13px] font-medium transition-colors duration-150',
+                      'min-h-11 rounded-md border px-3 text-[13px] font-medium sm:min-h-9 transition-colors duration-150',
                       on
                         ? 'border-accent bg-accent-soft text-accent-text'
                         : 'border-border bg-surface text-text-2 hover:border-border-strong hover:text-text',

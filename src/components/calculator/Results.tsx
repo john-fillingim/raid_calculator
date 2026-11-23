@@ -194,11 +194,10 @@ export function CapacityBar({ result, units }: { result: RaidResult; units: Unit
                     {formatBytes(s.bytes, other(units)).text} · {formatPercent(s.bytes / raw)}
                   </span>
                 }
+                className={`block h-full border transition-[flex-grow] duration-200 ease-out first:rounded-l-full last:rounded-r-full ${s.className}`}
+                style={{ flexGrow: s.bytes, flexBasis: 0 }}
               >
-                <span
-                  className={`block h-full border transition-[flex-grow] duration-200 ease-out first:rounded-l-full last:rounded-r-full ${s.className}`}
-                  style={{ flexGrow: s.bytes, flexBasis: 0 }}
-                />
+                {null}
               </HoverTip>
             ) : null,
           )}
@@ -383,7 +382,7 @@ export function ReliabilityCard({
             onChange={(v) => onUreRate(Number(`1e${v}`) as UreRate)}
           />
         </div>
-        <div className="w-[180px]">
+        <div className="w-[208px]">
           <NumberStepper
             label={<span className="text-[13px] text-text-3">Rebuild speed</span>}
             value={rebuildMBps}

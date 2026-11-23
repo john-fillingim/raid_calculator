@@ -73,7 +73,7 @@ export function NumberStepper({
       </label>
       <div
         className={[
-          'flex h-11 items-stretch overflow-hidden rounded-md border bg-surface transition-colors duration-150 focus-within:border-accent',
+          'flex h-12 items-stretch overflow-hidden sm:h-11 rounded-md border bg-surface transition-colors duration-150 focus-within:border-accent',
           invalid ? 'border-warn-border' : 'border-border-strong',
         ].join(' ')}
       >
@@ -107,7 +107,7 @@ export function NumberStepper({
               commit(text.trim() === '' || !Number.isFinite(n) ? value : n);
             }}
             onKeyDown={onKeyDown}
-            className="num w-full min-w-0 bg-transparent text-center text-[15px] text-text outline-none"
+            className="num h-full w-full min-w-0 bg-transparent text-center text-[15px] text-text outline-none"
           />
           {suffix && <span className="pr-3 text-sm text-text-3">{suffix}</span>}
         </div>
@@ -150,7 +150,7 @@ function StepButton({
       disabled={disabled}
       onClick={onClick}
       tabIndex={-1}
-      className="flex w-11 items-center justify-center text-text-2 transition-colors duration-150 hover:bg-surface-2 hover:text-text disabled:opacity-35 disabled:hover:bg-transparent"
+      className="flex w-12 items-center justify-center text-text-2 sm:w-11 transition-colors duration-150 hover:bg-surface-2 hover:text-text disabled:opacity-35 disabled:hover:bg-transparent"
     >
       <svg
         width="16"

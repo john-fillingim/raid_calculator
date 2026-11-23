@@ -51,7 +51,7 @@ export function DriveSizeInput({ value, onChange }: Props) {
       <div className="flex gap-2">
         <div
           className={[
-            'flex h-11 flex-1 items-center rounded-md border bg-surface px-3 transition-colors duration-150 focus-within:border-accent',
+            'flex h-12 flex-1 items-center rounded-md sm:h-11 border bg-surface px-3 transition-colors duration-150 focus-within:border-accent',
             invalid ? 'border-warn-border' : 'border-border-strong',
           ].join(' ')}
         >
@@ -72,7 +72,7 @@ export function DriveSizeInput({ value, onChange }: Props) {
             onBlur={() => {
               if (invalid) setText(textFor(value, unit));
             }}
-            className="num w-full min-w-0 bg-transparent text-[15px] text-text outline-none"
+            className="num h-full w-full min-w-0 bg-transparent text-[15px] text-text outline-none"
           />
         </div>
         <Segmented
@@ -127,7 +127,7 @@ function PresetRow({
               aria-pressed={active}
               onClick={() => onChange(Math.round(bytes))}
               className={[
-                'num min-h-8 rounded-md border px-2 text-xs transition-colors duration-150',
+                'num min-h-11 min-w-11 rounded-md border px-2 text-xs sm:min-h-8 sm:min-w-0 transition-colors duration-150',
                 active
                   ? 'border-accent bg-accent-soft text-accent-text'
                   : 'border-border bg-surface text-text-2 hover:border-border-strong hover:text-text',

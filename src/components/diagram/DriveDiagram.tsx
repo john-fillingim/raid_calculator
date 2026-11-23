@@ -46,8 +46,7 @@ export function DriveDiagram({
     <div>
       {interactive && <FailureStatus sim={sim} onReset={onReset} />}
       <div
-        className="no-scrollbar -mx-5 overflow-x-auto px-5 pb-1 sm:-mx-6 sm:px-6"
-        tabIndex={-1}
+        className="-mx-5 overflow-x-auto px-5 pb-2 [scrollbar-width:thin] sm:-mx-6 sm:px-6"
         data-testid="diagram-scroll"
       >
         <div className="flex w-max min-w-full gap-3" role="group" aria-label="Drive layout">
@@ -276,7 +275,7 @@ function FailureStatus({ sim, onReset }: { sim: FailureResult; onReset: () => vo
         <button
           type="button"
           onClick={onReset}
-          className="min-h-9 rounded-md px-2.5 text-[13px] font-medium underline-offset-2 hover:underline"
+          className="min-h-11 rounded-md px-2.5 text-[13px] font-medium sm:min-h-9 underline-offset-2 hover:underline"
         >
           Reset
         </button>

@@ -58,7 +58,9 @@ export function Segmented<T extends string>({
             onKeyDown={(e) => onKeyDown(e, i)}
             className={[
               'rounded-[5px] font-medium transition-colors duration-150',
-              size === 'sm' ? 'min-h-8 px-2.5 text-xs' : 'min-h-9 px-3 text-sm',
+              size === 'sm'
+                ? 'min-h-11 min-w-11 px-2.5 text-xs sm:min-h-8 sm:min-w-0'
+                : 'min-h-11 min-w-11 px-3 text-sm sm:min-h-9 sm:min-w-0',
               checked ? 'bg-surface text-text shadow-sm' : 'text-text-3 hover:text-text',
             ].join(' ')}
           >

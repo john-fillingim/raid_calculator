@@ -1,0 +1,98 @@
+---
+// Cycles system -> light -> dark. Vanilla script; no framework needed for this.
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class="ml-1 inline-flex size-11 items-center justify-center rounded-md text-text-2 transition-colors duration-150 hover:bg-surface-2 hover:text-text sm:size-9"
+  aria-label="Theme: system"
+  title="Theme: system"
+>
+  <svg
+    data-icon="system"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    aria-hidden="true"
+  >
+    <circle cx="8" cy="8" r="6"></circle>
+    <path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"></path>
+  </svg>
+  <svg
+    data-icon="light"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    aria-hidden="true"
+    class="hidden"
+  >
+    <circle cx="8" cy="8" r="3"></circle>
+    <path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1.06 1.06M11.54 11.54l1.06 1.06M3.4 12.6l1.06-1.06M11.54 4.46l1.06-1.06"></path>
+  </svg>
+  <svg
+    data-icon="dark"
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    class="hidden"
+  >
+    <path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z"></path>
+  </svg>
+</button>
+
+<script>
+  type Pref = 'system' | 'light' | 'dark';
+  const KEY = 'raid-calc:theme';
+  const order: Pref[] = ['system', 'light', 'dark'];
+  const button = document.getElementById('theme-toggle');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function readPref(): Pref {
+    try {
+      const v = localStorage.getItem(KEY);
+      return v === 'light' || v === 'dark' ? v : 'system';
+    } catch {
+      return 'system';
+    }
+  }
+
+  function apply(pref: Pref) {
+    const dark = pref === 'dark' || (pref === 'system' && media.matches);
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    document.documentElement.dataset.themePref = pref;
+    if (!button) return;
+    const label = `Theme: ${pref}`;
+    button.setAttribute('aria-label', label);
+    button.setAttribute('title', label);
+    button.querySelectorAll<SVGElement>('[data-icon]').forEach((icon) => {
+      icon.classList.toggle('hidden', icon.dataset.icon !== pref);
+    });
+  }
+
+  let pref = readPref();
+  apply(pref);
+  media.addEventListener('change', () => apply(pref));
+  button?.addEventListener('click', () => {
+    pref = order[(order.indexOf(pref) + 1) % order.length] ?? 'system';
+    try {
+      if (pref === 'system') localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, pref);
+    } catch {
+      // Storage can be unavailable (private mode, blocked cookies). The toggle still works.
+    }
+    apply(pref);
+  });
+</script>

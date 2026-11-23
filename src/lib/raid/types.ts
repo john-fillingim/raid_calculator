@@ -160,8 +160,10 @@ export type FailureResult = {
   state: ArrayState;
   /** Member drive indices that are failed (sorted, deduplicated). */
   failedDrives: number[];
-  /** Logical data blocks with no surviving copy or parity in the diagram. */
+  /** Logical data blocks on failed drives with no surviving copy or parity. */
   lostDataBlocks: number[];
+  /** Redundancy units (Block.unit) that have lost more blocks than they tolerate. */
+  deadUnits: number[];
   /** Further failures the array is guaranteed to survive from here. */
   remainingGuaranteed: number;
   message: string;

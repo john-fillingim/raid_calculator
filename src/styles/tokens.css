@@ -1,0 +1,102 @@
+/*
+ * Design tokens. Raw values live here; Tailwind consumes them through @theme in global.css.
+ * Every text/background pair below is chosen to pass WCAG AA (4.5:1) in its theme.
+ */
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* Neutral, slightly cool gray scale */
+  --bg: #fbfbfc;
+  --surface: #ffffff;
+  --surface-2: #f4f5f7;
+  --surface-3: #eceef2;
+  --border: #e2e4e9;
+  --border-strong: #cdd1d9;
+  --text: #0f1115;
+  --text-2: #464b55;
+  --text-3: #5f6570;
+  --focus: #3b4fe0;
+
+  /* Accent: interactive elements only */
+  --accent: #3b4fe0;
+  --accent-hover: #2f41c4;
+  --accent-fg: #ffffff;
+  --accent-soft: #eef0ff;
+  --accent-text: #3343cf;
+
+  /* Semantic palette: diagram and status only */
+  --data-bg: #e7efff;
+  --data-border: #9db8f2;
+  --data-fg: #1d4296;
+  --parity-bg: #fff2d9;
+  --parity-border: #e8bf6d;
+  --parity-fg: #7a4b00;
+  --mirror-bg: #dcf5ee;
+  --mirror-border: #85cdb7;
+  --mirror-fg: #0c5c47;
+  --spare-bg: #f1f2f5;
+  --spare-border: #c4c8d0;
+  --spare-fg: #4f5560;
+  --spare-hatch: #d9dce2;
+  --failed-bg: #fde8e8;
+  --failed-border: #e58a8a;
+  --failed-fg: #a1181b;
+  --warn-bg: #fff4dc;
+  --warn-border: #e6c070;
+  --warn-fg: #7a4b00;
+  --ok-bg: #e3f6ec;
+  --ok-border: #8fd0ac;
+  --ok-fg: #0f5a35;
+
+  --elev-sm: 0 1px 2px rgb(15 17 21 / 0.04), 0 1px 1px rgb(15 17 21 / 0.03);
+  --elev-md: 0 4px 16px rgb(15 17 21 / 0.08), 0 1px 3px rgb(15 17 21 / 0.06);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0b0c0f;
+  --surface: #111317;
+  --surface-2: #171a1f;
+  --surface-3: #1e2128;
+  --border: #23262d;
+  --border-strong: #343842;
+  --text: #eceef2;
+  --text-2: #b4b9c3;
+  --text-3: #8e94a0;
+  --focus: #8b9bff;
+
+  --accent: #6d7dff;
+  --accent-hover: #8290ff;
+  --accent-fg: #0b0c0f;
+  --accent-soft: #1b1f3a;
+  --accent-text: #a3aeff;
+
+  --data-bg: #14223f;
+  --data-border: #2f4d8c;
+  --data-fg: #a9c4ff;
+  --parity-bg: #2e2210;
+  --parity-border: #735317;
+  --parity-fg: #f5c870;
+  --mirror-bg: #0f2a24;
+  --mirror-border: #23675a;
+  --mirror-fg: #86dcc2;
+  --spare-bg: #16181d;
+  --spare-border: #3a3e48;
+  --spare-fg: #a0a6b1;
+  --spare-hatch: #262a31;
+  --failed-bg: #2e1214;
+  --failed-border: #8a2c30;
+  --failed-fg: #ff9b9b;
+  --warn-bg: #2b2110;
+  --warn-border: #6e5219;
+  --warn-fg: #f2c66d;
+  --ok-bg: #0f2519;
+  --ok-border: #22603f;
+  --ok-fg: #85d9a9;
+
+  --elev-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --elev-md: 0 8px 24px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.4);
+}

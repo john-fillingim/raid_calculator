@@ -1,9 +1,59 @@
 ---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/calculator/Calculator';
+import { DEFAULT_CONFIG, LEVEL_ORDER, LEVELS } from '../lib/raid';
+
+const site = Astro.site?.href ?? 'https://raid-calculator.example/';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'RAID Calculator',
+  url: site,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  description:
+    'Calculate usable capacity, fault tolerance, rebuild risk and performance for RAID 0, 1, 5, 6, 10, 50, 60 and ZFS RAID-Z, with a visual drive layout and failure simulator.',
+};
 ---
 
-<html lang="en">
-  <head>
-    <title>RAID Calculator</title>
-  </head>
-  <body>RAID calculator</body>
-</html>
+<Base
+  title="RAID Calculator: usable capacity, fault tolerance and rebuild risk"
+  description="Enter drive count, drive size and RAID level to get usable capacity in TB and TiB, fault tolerance, URE rebuild risk and a visual stripe layout. RAID 0 to 60 and ZFS RAID-Z."
+  jsonLd={jsonLd}
+>
+  <div class="mx-auto max-w-[1360px] px-4 pt-6 pb-24 sm:px-6 sm:pt-8 lg:pb-8">
+    <div class="mb-6 flex flex-col gap-1 sm:mb-8">
+      <h1 class="text-2xl font-semibold tracking-tight text-text sm:text-[28px]">
+        RAID Calculator
+      </h1>
+      <p class="text-[15px] text-text-2">
+        Usable capacity, fault tolerance and rebuild risk. Click a drive in the diagram to fail it.
+      </p>
+    </div>
+    <Calculator client:load syncUrl initialConfig={DEFAULT_CONFIG} />
+    <section class="mt-16 border-t border-border pt-10" aria-labelledby="levels-heading">
+      <h2 id="levels-heading" class="text-lg font-semibold tracking-tight text-text">
+        RAID levels explained
+      </h2>
+      <p class="mt-1 text-sm text-text-2">
+        Plain-English guides with a pre-filled calculator for each level.
+      </p>
+      <ul class="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {LEVEL_ORDER.map((id) => (
+          <li>
+            <a
+              href={`/raid/${LEVELS[id].slug}`}
+              class="flex h-full flex-col rounded-md border border-border bg-surface px-4 py-3 transition-colors duration-150 hover:border-border-strong hover:bg-surface-2"
+            >
+              <span class="text-sm font-medium text-text">{LEVELS[id].name}</span>
+              <span class="mt-0.5 text-xs text-text-3">{LEVELS[id].tagline}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</Base>

@@ -31,26 +31,25 @@ export function simulateFailures(layout: StripeLayout, failed: Iterable<number>)
   });
   const left = remaining === Infinity ? 0 : remaining;
 
+  // Lost = blocks on failed drives whose redundancy unit is beyond repair.
   const lost = new Set<number>();
   for (const drive of members) {
+    if (!failedSet.has(drive.index)) continue;
     for (const block of drive.blocks) {
-      if (
-        block.kind === 'data' &&
-        block.unit !== undefined &&
-        block.dataIndex !== undefined &&
-        deadUnits.has(block.unit)
-      ) {
+      if (block.unit !== undefined && deadUnits.has(block.unit) && block.dataIndex !== undefined) {
         lost.add(block.dataIndex);
       }
     }
   }
   const lostDataBlocks = [...lost].sort((a, b) => a - b);
+  const deadUnitList = [...deadUnits].sort((a, b) => a - b);
 
   if (failedDrives.length === 0) {
     return {
       state: 'optimal',
       failedDrives,
       lostDataBlocks,
+      deadUnits: deadUnitList,
       remainingGuaranteed: left,
       message: 'All drives healthy.',
     };
@@ -60,6 +59,7 @@ export function simulateFailures(layout: StripeLayout, failed: Iterable<number>)
       state: 'failed',
       failedDrives,
       lostDataBlocks,
+      deadUnits: deadUnitList,
       remainingGuaranteed: 0,
       message: `Array failed. ${plural(failedDrives.length, 'failed drive')} took out blocks that have no surviving copy or parity.`,
     };
@@ -68,6 +68,7 @@ export function simulateFailures(layout: StripeLayout, failed: Iterable<number>)
     state: 'degraded',
     failedDrives,
     lostDataBlocks,
+    deadUnits: deadUnitList,
     remainingGuaranteed: left,
     message:
       left === 0

@@ -93,6 +93,41 @@ describe('failure simulator', () => {
     expect(simulateFailures(layout, [0, 3, 5]).state).toBe('failed');
   });
 
+  it('lost blocks are only those on failed drives in dead units', () => {
+    const layout = layoutFor('raid5', 4);
+    const sim = simulateFailures(layout, [0, 1]);
+    expect(sim.state).toBe('failed');
+    const onFailed = new Set<number>();
+    const onSurvivors = new Set<number>();
+    for (const d of layout.drives) {
+      for (const b of d.blocks) {
+        if (b.kind !== 'data' || b.dataIndex === undefined) continue;
+        (d.index <= 1 ? onFailed : onSurvivors).add(b.dataIndex);
+      }
+    }
+    for (const i of sim.lostDataBlocks) {
+      expect(onFailed.has(i)).toBe(true);
+      expect(onSurvivors.has(i)).toBe(false);
+    }
+    expect(sim.lostDataBlocks.length).toBeGreaterThan(0);
+    // Every stripe has a block on both failed drives, so every unit is dead.
+    expect(sim.deadUnits).toEqual(layout.units.map((_, i) => i));
+  });
+
+  it('degraded arrays have no dead units', () => {
+    const sim = simulateFailures(layoutFor('raid6', 6), [1, 4]);
+    expect(sim.deadUnits).toEqual([]);
+    expect(sim.lostDataBlocks).toEqual([]);
+  });
+
+  it('RAID 10 same-pair failure kills exactly that pair’s units', () => {
+    const layout = layoutFor('raid10', 6);
+    const sim = simulateFailures(layout, [2, 3]);
+    // Pair 1 holds units r*3 + 1 for rows r = 0..3.
+    expect(sim.deadUnits).toEqual([1, 4, 7, 10]);
+    expect(sim.lostDataBlocks).toEqual([1, 4, 7, 10]);
+  });
+
   it('healthy array is optimal and reports its guaranteed tolerance', () => {
     expect(simulateFailures(layoutFor('raid6', 6), [])).toMatchObject({
       state: 'optimal',

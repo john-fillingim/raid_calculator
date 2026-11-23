@@ -1,0 +1,147 @@
+---
+import Base from '../../layouts/Base.astro';
+import Calculator from '../../components/calculator/Calculator';
+import { CONTENT } from '../../content/levels';
+import {
+  calculate,
+  formatBytes,
+  formatPercent,
+  LEVEL_ORDER,
+  LEVELS,
+  serializeConfig,
+  type RaidLevel,
+} from '../../lib/raid';
+
+export function getStaticPaths() {
+  return LEVEL_ORDER.map((id) => ({ params: { level: LEVELS[id].slug }, props: { id } }));
+}
+
+const FORMULA: Record<RaidLevel, string> = {
+  raid0: 'n × size',
+  raid1: 'size (one drive)',
+  raid1e: '(n × size) ÷ 2',
+  raid5: '(n − 1) × size',
+  raid5e: '(n − 2) × size',
+  raid5ee: '(n − 2) × size',
+  raid6: '(n − 2) × size',
+  raid10: '(n ÷ 2) × size',
+  raid50: '(n − spans) × size',
+  raid60: '(n − 2 × spans) × size',
+  raidz1: '(n − vdevs) × size',
+  raidz2: '(n − 2 × vdevs) × size',
+  raidz3: '(n − 3 × vdevs) × size',
+  jbod: 'n × size',
+};
+
+const { id } = Astro.props as { id: RaidLevel };
+const def = LEVELS[id];
+const content = CONTENT[id];
+const example = calculate(content.example);
+const ex = content.example;
+const exampleLabel = `${ex.driveCount} × ${formatBytes(ex.driveSizeBytes).text}${
+  ex.groups && def.grouped
+    ? ` in ${ex.groups} ${def.grouped.noun}${ex.groups === 1 ? '' : 's'}`
+    : ''
+}`;
+const exampleSummary = `${formatBytes(example.usableCapacityBytes).text} usable (${formatBytes(example.usableCapacityBytes, 'binary').text}), ${formatPercent(example.efficiency)} efficiency`;
+const facts = [
+  { label: 'Minimum drives', value: String(def.minDrives) + (def.requireEven ? ', even' : '') },
+  { label: 'Usable capacity', value: FORMULA[id] },
+  {
+    label: 'Fault tolerance',
+    value:
+      example.faultTolerance.bestCase > example.faultTolerance.guaranteed
+        ? `${example.faultTolerance.guaranteed} guaranteed, more if spread out`
+        : `${example.faultTolerance.guaranteed} ${example.faultTolerance.guaranteed === 1 ? 'drive' : 'drives'}`,
+  },
+  { label: 'Write penalty', value: `${example.performance.writePenalty}×` },
+];
+const site = Astro.site?.href ?? 'https://raid-calculator.example/';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: content.title,
+  description: content.description,
+  url: new URL(`/raid/${def.slug}`, site).href,
+  about: def.name,
+  isPartOf: { '@type': 'WebSite', name: 'RAID Calculator', url: site },
+};
+---
+
+<Base title={content.title} description={content.description} ogImage={def.slug} jsonLd={jsonLd}>
+  <div class="mx-auto max-w-[1360px] px-4 pt-6 pb-16 sm:px-6 sm:pt-8">
+    <nav aria-label="Breadcrumb" class="mb-4 text-sm text-text-3">
+      <a href="/raid" class="hover:text-text">
+        RAID levels
+      </a>
+      <span aria-hidden="true" class="mx-1.5">
+        /
+      </span>
+      <span aria-current="page" class="text-text-2">
+        {def.name}
+      </span>
+    </nav>
+    <header class="max-w-3xl">
+      <h1 class="text-[28px] font-semibold tracking-tight text-text sm:text-4xl">{def.name}</h1>
+      <p class="mt-1 text-[15px] text-text-3">{def.tagline}</p>
+      <p class="mt-5 text-[17px] leading-relaxed text-text-2">{content.summary}</p>
+    </header>
+
+    <dl class="mt-8 grid max-w-4xl grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border lg:grid-cols-4">
+      {facts.map((f) => (
+        <div class="bg-surface px-4 py-3">
+          <dt class="text-[13px] text-text-3">{f.label}</dt>
+          <dd class="tabular mt-1 text-[15px] font-medium text-text">{f.value}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <section class="mt-12" aria-labelledby="try-heading">
+      <div class="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 id="try-heading" class="text-lg font-semibold tracking-tight text-text">
+          Try it: {exampleLabel}
+        </h2>
+        <p class="text-sm text-text-3">{exampleSummary}</p>
+      </div>
+      <Calculator client:visible initialConfig={content.example} embedded />
+    </section>
+
+    <article class="prose-raid mt-14 max-w-3xl">
+      <h2>How {def.name} works</h2>
+      {content.how.map((p) => (
+        <p>{p}</p>
+      ))}
+      <h2>When to use {def.name}</h2>
+      <ul>
+        {content.useWhen.map((x) => (
+          <li>{x}</li>
+        ))}
+      </ul>
+      <h2>When not to</h2>
+      <ul>
+        {content.avoidWhen.map((x) => (
+          <li>{x}</li>
+        ))}
+      </ul>
+      <h2>Related levels</h2>
+      <ul>
+        {content.related.map((r) => (
+          <li>
+            <a href={`/raid/${LEVELS[r].slug}`}>{LEVELS[r].name}</a>: {LEVELS[r].tagline}.
+          </li>
+        ))}
+      </ul>
+      <p>
+        <a
+          href={`/compare?levels=${[id, ...content.related.slice(0, 2)].join(',')}&${serializeConfig(content.example).replace(/^level=[^&]+&/, '')}`}
+        >
+          Compare {def.name} with{' '}
+          {content.related
+            .slice(0, 2)
+            .map((r) => LEVELS[r].name)
+            .join(' and ')}
+        </a>
+      </p>
+    </article>
+  </div>
+</Base>

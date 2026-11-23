@@ -2,6 +2,7 @@ import {
   formatBytes,
   formatNumber,
   formatPercent,
+  formatProbability,
   URE_WARNING_THRESHOLD,
   type RaidResult,
   type Suggestion,
@@ -333,7 +334,7 @@ export function ReliabilityCard({
               <p
                 className={`num mt-1 text-2xl font-semibold ${risky ? 'text-failed-fg' : 'text-text'}`}
               >
-                {formatPercent(p, p < 0.001 ? 3 : 1)}
+                {formatProbability(p)}
               </p>
               <p className="mt-0.5 text-xs text-text-3">
                 reading <span className="num">{formatBytes(rel.rebuildReadBytes, units).text}</span>

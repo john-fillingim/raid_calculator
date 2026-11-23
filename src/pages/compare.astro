@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import Compare from '../components/compare/Compare';
+---
+
+<Base
+  title="Compare RAID levels side by side: capacity, tolerance and rebuild risk"
+  description="Pick 2 to 4 RAID levels with the same drives and compare usable capacity, fault tolerance, write penalty and URE rebuild risk side by side."
+  ogImage="compare"
+>
+  <div class="mx-auto max-w-[1100px] px-4 pt-6 pb-16 sm:px-6 sm:pt-8">
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-2xl font-semibold tracking-tight text-text sm:text-[28px]">
+        Compare RAID levels
+      </h1>
+      <p class="mt-1 text-[15px] text-text-2">
+        Same drives, different layouts. Pick 2 to 4 levels.
+      </p>
+    </div>
+    <Compare client:load />
+  </div>
+</Base>

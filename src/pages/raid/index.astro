@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import { CONTENT } from '../../content/levels';
+import { calculate, formatPercent, LEVEL_ORDER, LEVELS, TB } from '../../lib/raid';
+
+// Efficiency and tolerance for a common reference array: 8 drives (two spans / one vdev).
+const rows = LEVEL_ORDER.map((id) => {
+  const def = LEVELS[id];
+  const n = id === 'raid1' ? 2 : 8;
+  const groups = def.grouped ? def.grouped.defaultGroups : undefined;
+  const r = calculate({
+    level: id,
+    driveCount: n,
+    driveSizeBytes: 4 * TB,
+    ...(groups ? { groups } : {}),
+  });
+  return { def, n, r };
+});
+---
+
+<Base
+  title="RAID levels explained: 0, 1, 5, 6, 10, 50, 60 and ZFS RAID-Z"
+  description="Plain-English guides to every common RAID level, with capacity, fault tolerance and write penalty side by side, and a calculator for each."
+  ogImage="raid"
+>
+  <div class="mx-auto max-w-5xl px-4 pt-8 pb-16 sm:px-6">
+    <h1 class="text-[28px] font-semibold tracking-tight text-text sm:text-4xl">RAID levels</h1>
+    <p class="mt-3 max-w-2xl text-[17px] leading-relaxed text-text-2">
+      Each level trades capacity, speed and safety differently. The table uses 8 drives (2 for RAID
+      1) so the numbers are comparable.
+    </p>
+    <div class="mt-8 overflow-x-auto rounded-lg border border-border">
+      <table class="w-full min-w-[640px] text-left text-sm">
+        <thead class="bg-surface-2 text-[13px] text-text-3">
+          <tr>
+            <th scope="col" class="px-4 py-2.5 font-medium">
+              Level
+            </th>
+            <th scope="col" class="px-4 py-2.5 font-medium">
+              Min drives
+            </th>
+            <th scope="col" class="px-4 py-2.5 font-medium">
+              Efficiency
+            </th>
+            <th scope="col" class="px-4 py-2.5 font-medium">
+              Survives
+            </th>
+            <th scope="col" class="px-4 py-2.5 font-medium">
+              Write penalty
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border bg-surface">
+          {rows.map(({ def, n, r }) => (
+            <tr>
+              <th scope="row" class="px-4 py-3 font-normal">
+                <a href={`/raid/${def.slug}`} class="font-medium text-accent-text hover:underline">
+                  {def.name}
+                </a>
+                <span class="block text-xs text-text-3">{def.tagline}</span>
+              </th>
+              <td class="num px-4 py-3 text-text">{def.minDrives}</td>
+              <td class="num px-4 py-3 text-text">
+                {formatPercent(r.efficiency)}
+                <span class="text-xs text-text-3"> at {n}</span>
+              </td>
+              <td class="num px-4 py-3 text-text">
+                {r.faultTolerance.guaranteed}
+                {r.faultTolerance.bestCase > r.faultTolerance.guaranteed && (
+                  <span class="text-xs text-text-3"> (up to {r.faultTolerance.bestCase})</span>
+                )}
+              </td>
+              <td class="num px-4 py-3 text-text">{r.performance.writePenalty}×</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <ul class="mt-10 grid gap-3 sm:grid-cols-2">
+      {LEVEL_ORDER.map((id) => (
+        <li>
+          <a
+            href={`/raid/${LEVELS[id].slug}`}
+            class="block h-full rounded-lg border border-border bg-surface p-4 transition-colors duration-150 hover:border-border-strong hover:bg-surface-2"
+          >
+            <span class="font-medium text-text">{LEVELS[id].name}</span>
+            <span class="mt-1 line-clamp-3 block text-sm text-text-2">{CONTENT[id].summary}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

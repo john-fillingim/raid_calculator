@@ -4,6 +4,7 @@ import {
   driveSizeLabel,
   formatBytes,
   formatPercent,
+  formatProbability,
   fromBytes,
   GB,
   parseDriveSize,
@@ -55,6 +56,14 @@ describe('formatBytes', () => {
 
   it('uses thousands separators for large values in a unit', () => {
     expect(formatBytes(999.5 * GB).text).toBe('999.5 GB');
+  });
+
+  it('formats probabilities without misleading 0% / 100%', () => {
+    expect(formatProbability(0)).toBe('0%');
+    expect(formatProbability(0.0004)).toBe('<0.1%');
+    expect(formatProbability(0.6171)).toBe('61.7%');
+    expect(formatProbability(0.99996)).toBe('>99.9%');
+    expect(formatProbability(1)).toBe('100%');
   });
 
   it('formats percentages', () => {
